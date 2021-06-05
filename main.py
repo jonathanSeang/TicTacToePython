@@ -1,14 +1,7 @@
 # Tic Tac Toe Project
 
 # TODO:
-# - check for winner
-#
-# - validate user input
-#     - can not overlap existing user
-#     - must be within range and an int
-#
 # - create AI to play with?
-#
 #
 
 # prints out a board state list
@@ -25,9 +18,31 @@ def printBoard(boardStateList):
 
 
 # gets and validates user input
-def getUserInput(playerChar):
-    userInput = int(input(f'Player {playerChar} please input position number: '))
-    return userInput
+def getUserInput(boardStateList, playerChar):
+    currentlyInvalidInput = True
+
+    while currentlyInvalidInput:
+        userInput = input(f'Player {playerChar} please input position number: ')
+
+        # check if input is digit
+        if not userInput.isdigit():
+            print("Input is not a digit, please try again")
+            continue
+
+        # check if within range
+        if not int(userInput) in range(1,10):
+            print("Input is outside of range, please select between 1-9")
+            continue
+
+        # check if value has not been used already
+        valueTryingToReplace = convertPositionIntToTuple(int(userInput))
+        if (boardStateList[valueTryingToReplace[0]][valueTryingToReplace[1]]) in ('X', 'O'):
+            print("Position has already been used, please select a different spot")
+            continue
+
+        currentlyInvalidInput = False
+
+    return int(userInput)
 
 
 # converts the int form of user input into a tuple that can be used for 2D list
@@ -79,7 +94,7 @@ while noWinnerExists:
     currPlayer = 'X' if currPlayer == 'O' else 'O'
 
     # get user input and alter board accordingly
-    currUserInput = getUserInput(currPlayer)  # get input
+    currUserInput = getUserInput(currBoard, currPlayer)  # get input
     alteredPosition = convertPositionIntToTuple(currUserInput)  # convert input
     currBoard[alteredPosition[0]][alteredPosition[1]] = currPlayer  # apply input
     printBoard(currBoard)  # print
